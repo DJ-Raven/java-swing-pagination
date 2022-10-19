@@ -15,7 +15,7 @@ public class Pagination extends JPanel {
 
     public void setPaginationItemRender(PaginationItemRender paginationItemRender) {
         this.paginationItemRender = paginationItemRender;
-        setPagegination(page.getCurrent(), page.getTotalPage());
+        changePage(page.getCurrent(), page.getTotalPage());
     }
 
     private PaginationItemRender paginationItemRender;
@@ -29,7 +29,7 @@ public class Pagination extends JPanel {
     private void init() {
         paginationItemRender = new DefaultPaginationItemRender();
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
-        setPagegination(12, 20);
+        setPagegination(1, 1);
     }
 
     private void runEvent() {
@@ -51,55 +51,59 @@ public class Pagination extends JPanel {
             current = totalPage;
         }
         if (page == null || (page.getCurrent() != current || page.getTotalPage() != totalPage)) {
-            page = paginate(current, totalPage);
-            removeAll();
-            refresh();
-            JButton cmdPrev = paginationItemRender.createPaginationItem("Previous", true, false, page.isPrevious());
-            cmdPrev.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (page.getCurrent() > 1) {
-                        setPagegination(page.getCurrent() - 1, totalPage);
-                        runEvent();
-                    }
-                }
-            });
-            add(cmdPrev);
-            for (Object item : page.getItems()) {
-                JButton cmd = paginationItemRender.createPaginationItem(item, false, false, isEnable(item));
-                if (item instanceof Integer) {
-                    if (Integer.valueOf(item.toString()) == page.getCurrent()) {
-                        cmd.setSelected(true);
-                    }
-                }
-                cmd.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        if (!cmd.isSelected() && item != null) {
-                            if (item instanceof Page.BreakLabel) {
-                                Page.BreakLabel pb = (Page.BreakLabel) item;
-                                setPagegination(pb.getPage(), totalPage);
-                            } else {
-                                setPagegination(Integer.valueOf(item.toString()), totalPage);
-                            }
-                            runEvent();
-                        }
-                    }
-                });
-                add(cmd);
-            }
-            JButton cmdNext = paginationItemRender.createPaginationItem("Next", false, true, page.isNext());
-            cmdNext.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (page.getCurrent() < page.getTotalPage()) {
-                        setPagegination(page.getCurrent() + 1, totalPage);
-                        runEvent();
-                    }
-                }
-            });
-            add(cmdNext);
+            changePage(current, totalPage);
         }
+    }
+
+    private void changePage(int current, int totalPage) {
+        page = paginate(current, totalPage);
+        removeAll();
+        refresh();
+        JButton cmdPrev = paginationItemRender.createPaginationItem("Previous", true, false, page.isPrevious());
+        cmdPrev.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (page.getCurrent() > 1) {
+                    setPagegination(page.getCurrent() - 1, totalPage);
+                    runEvent();
+                }
+            }
+        });
+        add(cmdPrev);
+        for (Object item : page.getItems()) {
+            JButton cmd = paginationItemRender.createPaginationItem(item, false, false, isEnable(item));
+            if (item instanceof Integer) {
+                if (Integer.valueOf(item.toString()) == page.getCurrent()) {
+                    cmd.setSelected(true);
+                }
+            }
+            cmd.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (!cmd.isSelected() && item != null) {
+                        if (item instanceof Page.BreakLabel) {
+                            Page.BreakLabel pb = (Page.BreakLabel) item;
+                            setPagegination(pb.getPage(), totalPage);
+                        } else {
+                            setPagegination(Integer.valueOf(item.toString()), totalPage);
+                        }
+                        runEvent();
+                    }
+                }
+            });
+            add(cmd);
+        }
+        JButton cmdNext = paginationItemRender.createPaginationItem("Next", false, true, page.isNext());
+        cmdNext.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (page.getCurrent() < page.getTotalPage()) {
+                    setPagegination(page.getCurrent() + 1, totalPage);
+                    runEvent();
+                }
+            }
+        });
+        add(cmdNext);
     }
 
     private void refresh() {

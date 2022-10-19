@@ -23,6 +23,7 @@ public class Test extends javax.swing.JFrame {
             }
         });
         pagination1.setPaginationItemRender(new PaginationItemRenderStyle1());
+        pagination1.setPagegination(12, 20);
     }
 
     /**
