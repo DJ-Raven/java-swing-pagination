@@ -116,7 +116,7 @@ public class Pagination extends JPanel {
         boolean next = current < max;
         List<Object> items = new ArrayList<>();
         items.add(1);
-        if (current == 1 && max == 2) {
+        if (current == 1 && max == 1) {
             return new Page(current, prev, next, items, max);
         }
         int r = 2;
